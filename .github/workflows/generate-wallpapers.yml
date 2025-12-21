@@ -28,24 +28,28 @@ jobs:
         run: |
           echo "Generating wallpapers manifest..."
 
-          files=$(git log --name-only --pretty=format: --diff-filter=A \
-            | grep -E '^walls/.*\.(jpg|jpeg|png|webp|gif|bmp)$' \
-            | sort -u \
-            | grep -v '^$')
+          # Get all files from git history that were added to walls directory
+          files=$(git log --name-only --pretty=format: --diff-filter=A | grep '^walls/.*\.(jpg\|jpeg\|png\|webp\|gif\|bmp)$' | sort -u | tac)
 
-          if [ -z "$files" ]; then
-            echo "No wallpaper files found in walls/ directory"
-            files=""
-            count=0
+          # Count files
+          if [ -n "$files" ]; then
+            count=$(echo "$files" | wc -l)
           else
-            files=$(echo "$files" | tac)
-            count=$(echo "$files" | wc -l | tr -d ' ')
+            count=0
+            files=""
+          fi
+
+          # Generate JSON
+          if [ -n "$files" ]; then
+            files_json=$(echo "$files" | jq -R . | jq -s .)
+          else
+            files_json="[]"
           fi
 
           jq -n \
             --argjson count "$count" \
             --arg updated "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            --argjson files "$(if [ -n \"$files\" ]; then printf '%s\n' $files | jq -R . | jq -s .; else echo '[]'; fi)" \
+            --argjson files "$files_json" \
             '{count: $count, updated: $updated, files: $files}' \
             > wallpapers.json
 
