@@ -1,6 +1,6 @@
 # Wavo Wallpaper Collection
 
-This repository contains a curated collection of wallpapers with an automated system that generates a simple manifest file listing all available wallpapers. This JSON file powers the [Wavo](https://wavo.com) wallpaper gallery and can be used by other websites to display the wallpapers.
+This repository contains a curated collection of wallpapers with an automated system that generates a simple manifest file listing all available wallpapers. This JSON file powers the [Wavo](soon) wallpaper gallery and can be used by other websites to display the wallpapers.
 
 ## Features
 

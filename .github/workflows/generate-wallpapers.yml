@@ -4,12 +4,12 @@ on:
   push:
     branches: [main]
     paths:
-      - "**.jpg"
-      - "**.jpeg"
-      - "**.png"
-      - "**.webp"
-      - "**.gif"
-      - "**.bmp"
+      - "walls/**.jpg"
+      - "walls/**.jpeg"
+      - "walls/**.png"
+      - "walls/**.webp"
+      - "walls/**.gif"
+      - "walls/**.bmp"
 
 permissions:
   contents: write
@@ -29,7 +29,7 @@ jobs:
           echo "Generating wallpapers manifest..."
 
           files=$(git log --name-only --pretty=format: --diff-filter=A \
-            | grep -E '\.(jpg|jpeg|png|webp|gif|bmp)$' \
+            | grep -E '^walls/.*\.(jpg|jpeg|png|webp|gif|bmp)$' \
             | sort -u)
 
           files=$(echo "$files" | tac)
