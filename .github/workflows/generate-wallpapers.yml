@@ -30,15 +30,22 @@ jobs:
 
           files=$(git log --name-only --pretty=format: --diff-filter=A \
             | grep -E '^walls/.*\.(jpg|jpeg|png|webp|gif|bmp)$' \
-            | sort -u)
+            | sort -u \
+            | grep -v '^$')
 
-          files=$(echo "$files" | tac)
-          count=$(echo "$files" | wc -l | tr -d ' ')
+          if [ -z "$files" ]; then
+            echo "No wallpaper files found in walls/ directory"
+            files=""
+            count=0
+          else
+            files=$(echo "$files" | tac)
+            count=$(echo "$files" | wc -l | tr -d ' ')
+          fi
 
           jq -n \
             --argjson count "$count" \
             --arg updated "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            --argjson files "$(printf '%s\n' $files | jq -R . | jq -s .)" \
+            --argjson files "$(if [ -n \"$files\" ]; then printf '%s\n' $files | jq -R . | jq -s .; else echo '[]'; fi)" \
             '{count: $count, updated: $updated, files: $files}' \
             > wallpapers.json
 
