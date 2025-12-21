@@ -28,22 +28,21 @@ jobs:
         run: |
           echo "Generating wallpapers manifest..."
 
-          # Get all files from git history that were added to walls directory
-          files=$(git log --name-only --pretty=format: --diff-filter=A | grep '^walls/.*\.(jpg\|jpeg\|png\|webp\|gif\|bmp)$' | sort -u | tac)
-
-          # Count files
-          if [ -n "$files" ]; then
-            count=$(echo "$files" | wc -l)
+          # Simply find all image files in walls directory
+          if [ -d "walls" ]; then
+            files=$(find walls -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.webp" -o -name "*.gif" -o -name "*.bmp" \) | sort -r)
+            count=$(echo "$files" | grep -c .)
           else
-            count=0
             files=""
+            count=0
           fi
 
           # Generate JSON
-          if [ -n "$files" ]; then
+          if [ -n "$files" ] && [ "$count" -gt 0 ]; then
             files_json=$(echo "$files" | jq -R . | jq -s .)
           else
             files_json="[]"
+            count=0
           fi
 
           jq -n \
