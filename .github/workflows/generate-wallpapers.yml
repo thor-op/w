@@ -1,0 +1,54 @@
+name: Generate wallpapers manifest
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**.jpg"
+      - "**.jpeg"
+      - "**.png"
+      - "**.webp"
+      - "**.gif"
+      - "**.bmp"
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # REQUIRED for git history sorting
+
+      - name: Generate wallpapers.json
+        run: |
+          echo "Generating wallpapers manifest..."
+
+          files=$(git log --name-only --pretty=format: --diff-filter=A \
+            | grep -E '\.(jpg|jpeg|png|webp|gif|bmp)$' \
+            | sort -u)
+
+          files=$(echo "$files" | tac)
+          count=$(echo "$files" | wc -l | tr -d ' ')
+
+          jq -n \
+            --argjson count "$count" \
+            --arg updated "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --argjson files "$(printf '%s\n' $files | jq -R . | jq -s .)" \
+            '{count: $count, updated: $updated, files: $files}' \
+            > wallpapers.json
+
+          echo "Generated wallpapers.json with $count files"
+
+      - name: Commit and push manifest
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          git add wallpapers.json
+          git commit -m "auto: update wallpapers manifest" || exit 0
+          git push

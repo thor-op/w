@@ -1,53 +1,65 @@
-# Automated Wallpaper Metadata Generator
+# Wavo Wallpaper Collection
 
-This repository contains a collection of wallpapers with an automated system that generates metadata for each wallpaper and stores it in a JSON file. This JSON file can then be used by your own website to display the wallpapers.
+This repository contains a curated collection of wallpapers with an automated system that generates a simple manifest file listing all available wallpapers. This JSON file powers the [Wavo](https://wavo.com) wallpaper gallery and can be used by other websites to display the wallpapers.
 
 ## Features
 
-- Automatically generates metadata when new wallpapers are added
-- Creates a comprehensive `wallpapers.json` file with:
-  - File paths
-  - Image resolutions
-  - File sizes
-  - AI-generated titles and descriptions
-  - AI-generated tags
-  - Device compatibility recommendations
+- Automatically generates a manifest when new wallpapers are added
+- Creates a simple `wallpapers.json` file with:
+  - Total count of wallpapers
+  - Last updated timestamp
+  - List of all wallpaper filenames
 
 ## How It Works
 
-1. When you upload new wallpapers to this repository, a GitHub Actions workflow is triggered
-2. The workflow runs a script that:
-   - Scans the repository for image files
-   - Extracts metadata (resolution, file size)
-   - Uses OpenRouter API to generate titles, descriptions, and tags for each wallpaper
-   - Updates the `wallpapers.json` file
-3. You can then use this JSON file in your own website to display the wallpapers
+1. When you upload new image files to this repository, a GitHub Actions workflow is triggered
+2. The workflow automatically:
+   - Uses git history to find all image files (JPG, JPEG, PNG, WebP, GIF, BMP)
+   - Sorts files by when they were added (newest first)
+   - Counts the total number of wallpapers
+   - Generates a timestamp
+   - Updates the `wallpapers.json` manifest file
+3. You can then use this JSON file in your own website to display the wallpapers, just like how it powers the Wavo wallpaper gallery
 
 ## Setup Instructions
 
-### 1. Repository Setup
-
 1. Clone this repository
-2. Add your wallpaper images to the root directory (supported formats: jpg, jpeg, png, webp)
-3. Push the changes to GitHub
-
-### 2. OpenRouter API Setup (Optional)
-
-To enable AI-generated titles, descriptions, and tags:
-
-1. Create an account on [OpenRouter](https://openrouter.ai/)
-2. Get your API key (the script uses the free Mistral 7B Instruct model)
-3. Add the API key as a repository secret in GitHub:
-   - Go to your repository on GitHub
-   - Click on "Settings" > "Secrets and variables" > "Actions"
-   - Click "New repository secret"
-   - Name: `OPENROUTER_API_KEY`
-   - Value: Your OpenRouter API key
-   - Click "Add secret"
+2. Add your wallpaper images to the root directory (supported formats: JPG, JPEG, PNG, WebP, GIF, BMP)
+3. Push the changes to GitHub - the manifest will be generated automatically
 
 ## Adding New Wallpapers
 
-Simply add new image files to the repository and push them to GitHub. The `wallpapers.json` file will be updated automatically.
+Simply add new image files to the repository and push them to GitHub. The `wallpapers.json` manifest will be updated automatically.
+
+Supported formats: JPG, JPEG, PNG, WebP, GIF, BMP
+
+## Contributing Wallpapers
+
+We welcome contributions from the community! Here's how you can contribute your wallpapers:
+
+### Contribution Guidelines
+
+1. **File Format**: Supported formats are JPG, JPEG, PNG, WebP, GIF, and BMP
+2. **File Naming**: You can use any descriptive filename (e.g., `sunset-mountains.jpg`, `abstract-blue.png`, `nature-forest.webp`)
+3. **No Duplicates**: Please check existing wallpapers to avoid uploading duplicates
+4. **Quality**: Ensure your wallpapers are high quality and appropriate for public use
+5. **Rights**: Only submit wallpapers you own or have permission to share
+
+### How to Contribute
+
+1. Fork this repository
+2. Add your wallpaper files to the root directory
+3. Create a pull request with a brief description of the wallpapers you're adding
+4. Wait for review and approval
+
+### What Happens After Contribution
+
+Once your pull request is merged, the automated workflow will:
+- Update the wallpaper count
+- Add your files to the manifest
+- Make them available through the JSON API
+
+Thank you for helping grow the Wavo wallpaper collection!
 
 ## Using the JSON File
 
@@ -55,32 +67,23 @@ The generated `wallpapers.json` file has the following structure:
 
 ```json
 {
-  "lastUpdated": "2025-07-22T04:06:39.842Z",
   "count": 172,
-  "wallpapers": [
-    {
-      "name": "wallpaper1.jpg",
-      "path": "wallpaper1.jpg",
-      "size": "1024 KB",
-      "resolution": "1920x1080",
-      "metadata": {
-        "title": "Creative Title Here",
-        "description": "Brief description of the wallpaper",
-        "tags": ["nature", "landscape", "mountains"],
-        "recommendedDevices": ["desktop", "mobile"]
-      }
-    },
-    // More wallpapers...
+  "updated": "2025-12-21T10:30:00Z",
+  "files": [
+    "latest-wallpaper.png",
+    "recent-abstract.webp", 
+    "older-nature.jpg",
+    // More files ordered by when they were added (newest first)...
   ]
 }
 ```
 
-You can fetch this JSON file from your GitHub repository and use it in your own website to display the wallpapers.
+You can fetch this JSON file from your GitHub repository and use it in your own website to display the wallpapers. The files are ordered by when they were added to the repository, with the newest wallpapers appearing first in the list.
 
 ## Customization
 
-- Modify `generate-wallpapers.js` to change how metadata is generated
-- Update `.github/workflows/update-wallpapers.yml` to change the automation workflow
+- Modify `.github/workflows/generate-wallpapers.yml` to change the automation workflow
+- The workflow supports JPG, JPEG, PNG, WebP, GIF, and BMP formats - modify the file patterns if you need other formats
 
 ## License
 
