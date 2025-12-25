@@ -1,6 +1,10 @@
 # Wavo Wallpaper Collection
 
-This repository contains a curated collection of wallpapers with an automated system that generates a simple manifest file listing all available wallpapers. This JSON file powers the [Wavo](soon) wallpaper gallery and can be used by other websites to display the wallpapers.
+<p align="center">
+  <img src="https://cdn.jsdelivr.net/gh/thor-op/files@main/Wavo-OG.png" alt="Wavo Wallpaper Collection" width="600">
+</p>
+
+This repository contains a curated collection of wallpapers with an automated system that generates a simple manifest file listing all available wallpapers. This JSON file powers the [Wavo](https://wovo.thorxop.com) wallpaper gallery and can be used by other websites to display the wallpapers.
 
 ## Features
 
